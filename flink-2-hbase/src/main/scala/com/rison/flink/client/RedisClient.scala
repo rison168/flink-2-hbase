@@ -13,33 +13,34 @@ import scala.collection.mutable.ListBuffer
  */
 object RedisClient {
   //定义一个连接池对象
-  private var jedisPool:JedisPool = null
+  private var jedisPool: JedisPool = null
+  val prop = PropertiesUtil.load("config.properties")
+  val host = prop.getProperty("redis.host")
+  val port = prop.getProperty("redis.port")
+  val db = prop.getProperty("redis.db")
 
   /**
    * 创建JedisPool连接池对象
    */
-  def build():Unit = {
-    val prop = PropertiesUtil.load("config.properties")
-    val host = prop.getProperty("redis.host")
-    val port = prop.getProperty("redis.port")
-
+  def build(): Unit = {
     val jedisPoolConfig: JedisPoolConfig = new JedisPoolConfig
-    jedisPoolConfig.setMaxTotal(100)  //最大连接数
-    jedisPoolConfig.setMaxIdle(20)   //最大空闲
-    jedisPoolConfig.setMinIdle(20)     //最小空闲
-    jedisPoolConfig.setBlockWhenExhausted(true)  //忙碌时是否等待
-    jedisPoolConfig.setMaxWaitMillis(5000)//忙碌时等待时长 毫秒
+    jedisPoolConfig.setMaxTotal(100) //最大连接数
+    jedisPoolConfig.setMaxIdle(20) //最大空闲
+    jedisPoolConfig.setMinIdle(20) //最小空闲
+    jedisPoolConfig.setBlockWhenExhausted(true) //忙碌时是否等待
+    jedisPoolConfig.setMaxWaitMillis(5000) //忙碌时等待时长 毫秒
     jedisPoolConfig.setTestOnBorrow(true) //每次获得连接的进行测试
 
-    jedisPool=new JedisPool(jedisPoolConfig,host,port.toInt)
+    jedisPool = new JedisPool(jedisPoolConfig, host, port.toInt)
   }
 
   /**
    * 获取Jedis客户端
+   *
    * @return
    */
-  def getJedisClient():Jedis ={
-    if(jedisPool == null){
+  def getJedisClient(): Jedis = {
+    if (jedisPool == null) {
       build()
     }
     jedisPool.getResource
@@ -47,6 +48,7 @@ object RedisClient {
 
   /**
    * 获取value
+   *
    * @param key
    * @return
    */
@@ -60,6 +62,7 @@ object RedisClient {
 
   /**
    * 获取top value
+   *
    * @param topRange
    */
   def getTopList(topRange: Int) = {
