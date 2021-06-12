@@ -1,7 +1,6 @@
 package com.rison.flink.client
 
 import java.io.IOException
-import java.util
 import java.util.{Collections, Properties}
 
 import com.rison.flink.util.{LogHelper, PropertiesUtil}
@@ -119,6 +118,7 @@ object HbaseClient extends LogHelper {
 
   /**
    * 向对应的列添加数据
+   *
    * @param tableName
    * @param rowKey
    * @param familyName
@@ -139,16 +139,17 @@ object HbaseClient extends LogHelper {
 
   /**
    * 将单元格加1
-   * @param tableName 表名
-   * @param rowKey 行号
+   *
+   * @param tableName  表名
+   * @param rowKey     行号
    * @param familyName 列簇名
-   * @param column 列名
+   * @param column     列名
    */
   @throws[IOException]
   def incrementColumn(tableName: String, rowKey: String, familyName: String, column: String) = {
     val str: String = getData(tableName, rowKey, familyName, column)
     var res = 1
-    if (str != null){
+    if (str != null) {
       res = str.toInt + 1
     }
     putData(tableName, rowKey, familyName, column, res.toString)
@@ -156,30 +157,27 @@ object HbaseClient extends LogHelper {
 
   /**
    * 取出表中所有的key
+   *
    * @param tableName
    * @throws
    * @return
    */
   @throws[IOException]
-  def getAllKey(tableName: String) ={
+  def getAllKey(tableName: String) = {
     val keys = new ListBuffer[String]()
     val scan = new Scan()
-    if (conn == null){
+    if (conn == null) {
       build()
     }
     val table: Table = conn.getTable(TableName.valueOf(tableName))
     val scanner: ResultScanner = table.getScanner(scan)
     scanner.forEach(
-      r =>{
+      r => {
         keys.append(r.getRow.toString)
       }
     )
     keys
   }
-
-
-
-
 
 
 }
