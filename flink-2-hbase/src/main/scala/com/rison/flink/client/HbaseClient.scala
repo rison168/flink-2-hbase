@@ -7,11 +7,9 @@ import java.util.{Collections, Properties}
 import com.rison.flink.util.{LogHelper, PropertiesUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{Admin, Connection, ConnectionFactory, Get, Result, Table}
+import org.apache.hadoop.hbase.client.{Admin, Connection, ConnectionFactory, Get, Put, Result, ResultScanner, Scan, Table}
 import org.apache.hadoop.hbase.util.Bytes
 
-import scala.collection.convert.ImplicitConversions.`map AsScala`
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -38,36 +36,37 @@ object HbaseClient extends LogHelper {
     } catch {
       case e: IOException => e.printStackTrace()
     }
+  }
 
-    /**
-     * 创建Hbase表
-     *
-     * @param tableName      表名
-     * @param columnFamilies 簇字段
-     */
-    @throws[IOException]
-    def createTable(tableName: String, columnFamilies: String*)  = {
-      if (conn == null) {
-        this.build()
-      }
-      if (admin.tableExists(TableName.valueOf(tableName))) {
-        log.info("table exists !")
-      } else {
-        log.info("start create table...")
-        val tableDescriptor: HTableDescriptor = new HTableDescriptor(TableName.valueOf(tableName))
-        columnFamilies.foreach(
-          column => {
-            tableDescriptor.addFamily(new HColumnDescriptor(column))
-          }
-        )
-        admin.createTable(tableDescriptor)
-        log.info("create table success !")
-      }
+  /**
+   * 创建Hbase表
+   *
+   * @param tableName      表名
+   * @param columnFamilies 簇字段
+   */
+  @throws[IOException]
+  def createTable(tableName: String, columnFamilies: String*) = {
+    if (conn == null) {
+      build()
+    }
+    if (admin.tableExists(TableName.valueOf(tableName))) {
+      log.info("table exists !")
+    } else {
+      log.info("start create table...")
+      val tableDescriptor: HTableDescriptor = new HTableDescriptor(TableName.valueOf(tableName))
+      columnFamilies.foreach(
+        column => {
+          tableDescriptor.addFamily(new HColumnDescriptor(column))
+        }
+      )
+      admin.createTable(tableDescriptor)
+      log.info("create table success !")
     }
   }
 
   /**
    * 获取一列获取一行数据
+   *
    * @param tableName
    * @param rowKey
    * @param familyName
@@ -76,8 +75,8 @@ object HbaseClient extends LogHelper {
    */
   @throws[IOException]
   def getData(tableName: String, rowKey: String, familyName: String, column: String): String = {
-    if (conn == null){
-      this.build()
+    if (conn == null) {
+      build()
     }
     val table: Table = conn.getTable(TableName.valueOf(tableName))
     val rows: Array[Byte] = Bytes.toBytes(rowKey)
@@ -89,6 +88,7 @@ object HbaseClient extends LogHelper {
 
   /**
    * 获取一行的所有数据，并且排序
+   *
    * @param tableName
    * @param rowKey
    * @throws
@@ -96,8 +96,8 @@ object HbaseClient extends LogHelper {
    */
   @throws[IOException]
   def getRow(tableName: String, rowKey: String): ListBuffer[(String, Double)] = {
-    if (conn == null){
-      this.build()
+    if (conn == null) {
+      build()
     }
     val table: Table = conn.getTable(TableName.valueOf(tableName))
     val rows: Array[Byte] = Bytes.toBytes(rowKey)
@@ -116,6 +116,70 @@ object HbaseClient extends LogHelper {
         data1._2 < data2._2
     )
   }
+
+  /**
+   * 向对应的列添加数据
+   * @param tableName
+   * @param rowKey
+   * @param familyName
+   * @param column
+   * @param data
+   * @throws
+   */
+  @throws[IOException]
+  def putData(tableName: String, rowKey: String, familyName: String, column: String, data: String) = {
+    if (conn == null) {
+      build()
+    }
+    val table: Table = conn.getTable(TableName.valueOf(tableName))
+    val put = new Put(rowKey.getBytes())
+    put.addColumn(familyName.getBytes(), column.getBytes(), data.getBytes())
+    table.put(put)
+  }
+
+  /**
+   * 将单元格加1
+   * @param tableName 表名
+   * @param rowKey 行号
+   * @param familyName 列簇名
+   * @param column 列名
+   */
+  @throws[IOException]
+  def incrementColumn(tableName: String, rowKey: String, familyName: String, column: String) = {
+    val str: String = getData(tableName, rowKey, familyName, column)
+    var res = 1
+    if (str != null){
+      res = str.toInt + 1
+    }
+    putData(tableName, rowKey, familyName, column, res.toString)
+  }
+
+  /**
+   * 取出表中所有的key
+   * @param tableName
+   * @throws
+   * @return
+   */
+  @throws[IOException]
+  def getAllKey(tableName: String) ={
+    val keys = new ListBuffer[String]()
+    val scan = new Scan()
+    if (conn == null){
+      build()
+    }
+    val table: Table = conn.getTable(TableName.valueOf(tableName))
+    val scanner: ResultScanner = table.getScanner(scan)
+    scanner.forEach(
+      r =>{
+        keys.append(r.getRow.toString)
+      }
+    )
+    keys
+  }
+
+
+
+
 
 
 }
