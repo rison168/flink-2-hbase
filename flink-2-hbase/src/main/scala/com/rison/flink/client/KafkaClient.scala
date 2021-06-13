@@ -41,7 +41,7 @@ object KafkaClient extends LogHelper {
    * @param groupId
    * @return
    */
-  private def getKafkaProperties(groupId: String): Properties = {
+  def getKafkaProperties(groupId: String): Properties = {
     kafkaParam.put("group.id", groupId)
     val kafkaProps: Properties = new Properties()
     kafkaParam.empty.foreach(
@@ -57,7 +57,7 @@ object KafkaClient extends LogHelper {
    *
    * @return
    */
-  private def getKafkaProperties(): Properties = {
+  def getKafkaProperties(): Properties = {
     val kafkaProps: Properties = new Properties()
     kafkaParam.empty.foreach(
       param => {
