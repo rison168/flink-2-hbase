@@ -47,9 +47,10 @@ object MysqlClient {
     if (stmt == null) {
       build()
     }
-    stmt.executeQuery(sql)
+    val result = stmt.executeQuery(sql)
     conn.close()
     stmt.close()
+    result
   }
 
   /**
@@ -68,9 +69,10 @@ object MysqlClient {
     if (stmt == null) {
       build()
     }
-    stmt.executeQuery(sql)
+    val result = stmt.executeQuery(sql)
     conn.close()
     stmt.close()
+    result
   }
 
 }
