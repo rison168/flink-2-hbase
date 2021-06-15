@@ -1,4 +1,4 @@
-package com.rison.flink.task
+package com.rison.flink.sink
 
 import com.rison.flink.domain.TopProductEntity
 import org.apache.flink.streaming.connectors.redis.common.mapper.{RedisCommand, RedisCommandDescription, RedisMapper}
@@ -7,7 +7,7 @@ import org.apache.flink.streaming.connectors.redis.common.mapper.{RedisCommand, 
  * @author : Rison 2021/6/15 上午11:20
  *
  */
-case class TopRedisSink() extends RedisMapper[TopProductEntity]{
+case class TopRedisSink() extends RedisMapper[TopProductEntity] {
   override def getCommandDescription: RedisCommandDescription = {
     new RedisCommandDescription(RedisCommand.SET, null)
   }

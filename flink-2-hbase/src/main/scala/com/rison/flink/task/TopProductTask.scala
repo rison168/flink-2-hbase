@@ -5,6 +5,7 @@ import java.util.Properties
 import com.rison.flink.agg.CountAggregate
 import com.rison.flink.client.{KafkaClient, KafkaDStream}
 import com.rison.flink.domain.{LogEntity, TopProductEntity}
+import com.rison.flink.sink.TopRedisSink
 import com.rison.flink.top.TopNHotItems
 import com.rison.flink.util.PropertiesUtil
 import com.rison.flink.window.WindowResultFunction
