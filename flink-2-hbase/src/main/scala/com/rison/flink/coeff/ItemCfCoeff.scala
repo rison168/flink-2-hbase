@@ -13,7 +13,7 @@ import scala.collection.mutable.ListBuffer
  *               sqrt(i || j)
  *
  */
-object itemCfCoeff {
+object ItemCfCoeff {
 
   def twoItemCfCoeff(id: String, other: String): Double = {
     val p1: ListBuffer[(String, Double)] = HbaseClient.getRow("product_history", id)
