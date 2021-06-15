@@ -8,9 +8,9 @@ import scala.collection.mutable.ListBuffer
  * @author : Rison 2021/6/15 上午11:38
  *         基于协同过滤的产品相关度计算
  *         策略1 ：协同过滤
- *         abs( i ∩ j)
+ *               abs( i ∩ j)
  *         w = ——————————————
- *         sqrt(i || j)
+ *               sqrt(i || j)
  *
  */
 object itemCfCoeff {
