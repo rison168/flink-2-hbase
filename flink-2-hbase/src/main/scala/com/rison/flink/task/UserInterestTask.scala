@@ -7,9 +7,9 @@ import org.apache.flink.streaming.api.scala._
 
 /**
  * @author : Rison 2021/6/13 下午3:18
- *用户兴趣 -> Hbase
+ *         用户兴趣 -> Hbase
  */
-object UserInterestTask{
+object UserInterestTask {
   val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
   val groupId = "user_interest_groupId"
   val topic = "user_interest_topic"

@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.scala._
 
 /**
  * @author : Rison 2021/6/13 下午2:36
- * 产品画像 -> Hbase
+ *         产品画像 -> Hbase
  */
 object ProductPortraitTask {
   def main(args: Array[String]): Unit = {
@@ -16,7 +16,7 @@ object ProductPortraitTask {
     val topics = new java.util.ArrayList[String]
     topics.add(topic)
     val dataStream: DataStream[KafkaDStream] = env.addSource(KafkaClient.createKafkaSource(topics, groupId))
-      dataStream.map(ProductPortraitMapFunction())
+    dataStream.map(ProductPortraitMapFunction())
     env.execute(this.getClass.getSimpleName.stripPrefix("$"))
   }
 

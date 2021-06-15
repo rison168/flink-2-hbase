@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.scala._
 
 /**
  * @author : Rison 2021/6/13 下午3:01
- *用户画像 -> Hbase
+ *         用户画像 -> Hbase
  */
 object UserPortraitTask {
   def main(args: Array[String]): Unit = {

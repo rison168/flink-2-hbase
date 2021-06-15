@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.scala._
 
 /**
  * @author : Rison 2021/6/13 下午1:49
- * 日志 -> Hbase
+ *         日志 -> Hbase
  */
 object LogTask {
   def main(args: Array[String]): Unit = {
